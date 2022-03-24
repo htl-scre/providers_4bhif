@@ -10,7 +10,7 @@ class ContactItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(contact.name),
+      title: Text('${contact.name}, ${contact.id}'),
       subtitle: Text(contact.phoneNumber),
     );
   }

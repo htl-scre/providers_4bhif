@@ -5,12 +5,30 @@ import 'package:providers_4bhif/pages/add_contact_page.dart';
 import '../providers/contacts.dart';
 import '../widgets/contact_item.dart';
 
-class ContactsOverviewPage extends StatelessWidget {
+class ContactsOverviewPage extends StatefulWidget {
   const ContactsOverviewPage({Key? key}) : super(key: key);
 
   @override
+  State<ContactsOverviewPage> createState() => _ContactsOverviewPageState();
+}
+
+// FutureBuilder
+class _ContactsOverviewPageState extends State<ContactsOverviewPage> {
+  var loading = false;
+
+  @override
+  void didChangeDependencies() async {
+    setState(() {
+      loading = true;
+    });
+    await Provider.of<Contacts>(context, listen: false).loadContacts();
+    setState(() {
+      loading = false;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    //final contacts = Provider.of<Contacts>(context);
     return Scaffold(
       appBar: AppBar(title: Text('Contacts')),
       floatingActionButton: FloatingActionButton(
@@ -19,17 +37,20 @@ class ContactsOverviewPage extends StatelessWidget {
               .push(MaterialPageRoute(builder: (_) => new AddContactPage()));
         },
       ),
-      body: Consumer<Contacts>(
-        child:const Divider(), //------v
-        builder: (context, contacts, child) => Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ListView.separated(
-            itemBuilder: (context, index) => ContactItem(contacts.all[index]),
-            itemCount: contacts.all.length,
-            separatorBuilder: (_, __) => child!,
-          ),
-        ),
-      ),
+      body: loading
+          ? Center(child: CircularProgressIndicator())
+          : Consumer<Contacts>(
+              child: const Divider(), //------v
+              builder: (context, contacts, child) => Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListView.separated(
+                  itemBuilder: (context, index) =>
+                      ContactItem(contacts.all[index]),
+                  itemCount: contacts.all.length,
+                  separatorBuilder: (_, __) => child!,
+                ),
+              ),
+            ),
     );
   }
 }
