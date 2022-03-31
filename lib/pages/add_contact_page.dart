@@ -58,7 +58,7 @@ class AddContactPage extends StatelessWidget {
                         );
                         Provider.of<Contacts>(context, listen: false)
                             .addContact(contact);
-                        formState.reset();
+                        Navigator.of(context).pop();
                       }
                     },
                     icon: Icon(Icons.add),
